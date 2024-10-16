@@ -1,13 +1,15 @@
 import { load } from '@std/dotenv';
-import { txn } from './utils/eth.ts';
+import { join } from '@std/path';
+import { listen, txn } from './utils/eth.ts';
 
 await load({
   // envPath: '/Users/abraj/dev/archive/learn-solidity/env/.env',
-  envPath: '.env.local',
+  envPath: join(import.meta.dirname!, '.env.local'),
   export: true,
 });
 
 function main() {
+  listen();
   txn();
 }
 

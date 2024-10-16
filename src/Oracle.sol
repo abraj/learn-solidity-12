@@ -19,7 +19,7 @@ contract Oracle {
   }
 
   // emitted to notify (off-chain) oracle (to process new request)
-  event NewRequest(uint256 id, string urlToQuery, string attributeToFetch);
+  event NewRequest(uint256 indexed id, string urlToQuery, string attributeToFetch);
 
   // emitted to notify client contract (when there's a consensus on the final result)
   event ResultAvailable(uint256 id, string urlToQuery, string attributeToFetch, string agreedValue);
