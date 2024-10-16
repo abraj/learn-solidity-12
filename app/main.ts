@@ -1,12 +1,14 @@
 import { load } from '@std/dotenv';
+import { txn } from './utils/eth.ts';
 
 await load({
-  envPath: '/Users/abraj/dev/archive/learn-solidity/env/.env',
+  // envPath: '/Users/abraj/dev/archive/learn-solidity/env/.env',
+  envPath: '.env.local',
   export: true,
 });
 
 function main() {
-  console.log('>>', Deno.env.get('SEPOLIA_RPC_URL'));
+  txn();
 }
 
 if (import.meta.main) {
