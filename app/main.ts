@@ -9,8 +9,8 @@ await load({
 });
 
 async function clientRequest() {
-  const url = 'https://jsonplaceholder.typicode.com/users';
-  const attr = '2';
+  const url = 'https://jsonplaceholder.typicode.com/users/2';
+  const attr = 'name';
   await createRequest(url, attr);
 }
 
