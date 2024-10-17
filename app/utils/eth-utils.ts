@@ -13,7 +13,10 @@ export function getRpcUrl(chainId: number | undefined) {
 export function getPrivateKey(addr: string | undefined) {
   if (!addr) return null;
   const address = addr.toLowerCase();
-  if (address === process.env.WALLET_ADDRESS) {
+  if (
+    address && process.env.WALLET_ADDRESS &&
+    address.toLowerCase() === `${process.env.WALLET_ADDRESS}`.toLowerCase()
+  ) {
     return process.env.WALLET_PRIVATE_KEY;
   } else {
     return null;

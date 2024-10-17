@@ -2,6 +2,7 @@ import process from 'node:process';
 import { ethers } from 'ethers';
 import { getPrivateKey, getRpcUrl } from './eth-utils.ts';
 import { abi, contractAddress } from '../const/eth-sepolia.ts';
+import { queryApi } from '../oracle.ts';
 
 function getContract(signed = false) {
   const chainId = 11155111; // Sepolia
@@ -30,7 +31,7 @@ function getContract(signed = false) {
   return contract;
 }
 
-export async function txn() {
+export async function createRequest(url: string, attr: string) {
   try {
     const contract = getContract(true);
 
@@ -38,8 +39,8 @@ export async function txn() {
       throw new Error('Missing createRequest in ABI');
     }
 
-    await contract.createRequest('foo', 'bar');
-    console.log('txn submitted!');
+    await contract.createRequest(url, attr);
+    console.log('txn submitted: createRequest');
   } catch (err) {
     console.error(err);
   }
@@ -49,15 +50,33 @@ export function listen() {
   try {
     const contract = getContract();
 
-    contract.on('NewRequest', (reqId, url, attr) => {
+    contract.on('NewRequest', async (reqId, url, attr) => {
+      const types = [reqId, url, attr].map((v) => typeof v);
       console.log(
-        `[NewRequest event] reqId: ${reqId}, url: ${url}, attr: ${attr}; types: ${
-          [reqId, url, attr].map((v) => typeof v)
-        }`,
+        `[NewRequest event] reqId: ${reqId} (${types[0]}), url: (${
+          types[1]
+        }), attr: (${types[2]})`,
       );
+      const value = await queryApi(url, attr);
+      await updateRequest(reqId, value);
     });
 
     console.log('listener setup!');
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+export async function updateRequest(reqId: bigint, value: string) {
+  try {
+    const contract = getContract(true);
+
+    if (!contract.interface.hasFunction('updateRequest')) {
+      throw new Error('Missing updateRequest in ABI');
+    }
+
+    await contract.updateRequest(reqId, value);
+    console.log('txn submitted: updateRequest');
   } catch (err) {
     console.error(err);
   }
