@@ -1,7 +1,7 @@
 // Sepolia
 export const contractAddress = '0x8e3A3764E65eE972cf97c5AE4108999E095dAACf';
 
-export const abi = [
+export const contractAbi = [
   {
     'anonymous': false,
     'inputs': [

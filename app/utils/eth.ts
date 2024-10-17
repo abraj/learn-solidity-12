@@ -1,11 +1,19 @@
 import process from 'node:process';
 import { ethers } from 'ethers';
 import { getPrivateKey, getRpcUrl } from './eth-utils.ts';
-import { abi, contractAddress } from '../abi/oracle.ts';
+import {
+  contractAbi as oracleAbi,
+  contractAddress as oracleAddress,
+} from '../abi/oracle.ts';
 import { queryApi } from '../oracle.ts';
 import type { ContractTransactionResponse } from 'ethers';
 
-function getContract(signed = false, nodeName: string | null = null) {
+function getContract(
+  addr: string,
+  abi: object[],
+  signed = false,
+  nodeName: string | null = null,
+) {
   const chainId = 11155111; // Sepolia
 
   const rpcUrl = getRpcUrl(chainId);
@@ -29,17 +37,21 @@ function getContract(signed = false, nodeName: string | null = null) {
     }
 
     signer = new ethers.Wallet(privateKey, provider);
-    contract = new ethers.Contract(contractAddress, abi, signer);
+    contract = new ethers.Contract(addr, abi, signer);
   } else {
-    contract = new ethers.Contract(contractAddress, abi, provider);
+    contract = new ethers.Contract(addr, abi, provider);
   }
 
   return { contract, signer, provider };
 }
 
+function getOracleContract(signed = false, nodeName: string | null = null) {
+  return getContract(oracleAddress, oracleAbi, signed, nodeName);
+}
+
 export async function createRequest(url: string, attr: string) {
   try {
-    const { contract } = getContract(true);
+    const { contract } = getOracleContract(true);
 
     if (!contract.interface.hasFunction('createRequest')) {
       throw new Error('Missing createRequest in ABI');
@@ -54,7 +66,7 @@ export async function createRequest(url: string, attr: string) {
 
 export function listen(nodeName: string) {
   try {
-    const { contract } = getContract();
+    const { contract } = getOracleContract();
 
     contract.on('NewRequest', async (reqId, url, attr) => {
       const types = [reqId, url, attr].map((v) => typeof v);
@@ -79,7 +91,7 @@ export async function updateRequest(
   value: string,
 ) {
   try {
-    const { contract, provider } = getContract(true, nodeName);
+    const { contract, provider } = getOracleContract(true, nodeName);
 
     if (!contract.interface.hasFunction('updateRequest')) {
       throw new Error('Missing updateRequest in ABI');
@@ -107,7 +119,7 @@ export async function updateRequest(
 
 export function listen2() {
   try {
-    const { contract } = getContract();
+    const { contract } = getOracleContract();
 
     contract.once('ResultAvailable', (reqId, url, attr, value) => {
       const types = [reqId, url, attr, value].map((v) => typeof v);
