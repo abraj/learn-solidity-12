@@ -17,3 +17,4 @@ deno run -A app/main.ts
 ### Oracle Implementation
 
 - https://medium.com/@pedrodc/implementing-a-blockchain-oracle-on-ethereum-cedc7e26b49e
+- https://github.com/pedroduartecosta/blockchain-oracle/tree/master

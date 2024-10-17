@@ -1,7 +1,7 @@
 import process from 'node:process';
 import { ethers } from 'ethers';
 import { getPrivateKey, getRpcUrl } from './eth-utils.ts';
-import { abi, contractAddress } from '../const/eth-sepolia.ts';
+import { abi, contractAddress } from '../abi/oracle.ts';
 import { queryApi } from '../oracle.ts';
 import type { ContractTransactionResponse } from 'ethers';
 
