@@ -1,5 +1,5 @@
 // Sepolia
-export const contractAddress = '0x6fEd85A732dde425594D8C8522Ab9feB4b2E80eC';
+export const contractAddress = '0x8e3A3764E65eE972cf97c5AE4108999E095dAACf';
 
 export const abi = [
   {
@@ -24,7 +24,7 @@ export const abi = [
     'anonymous': false,
     'inputs': [
       {
-        'indexed': false,
+        'indexed': true,
         'internalType': 'uint256',
         'name': 'id',
         'type': 'uint256',
@@ -163,6 +163,40 @@ export const abi = [
         'internalType': 'uint256',
         'name': '',
         'type': 'uint256',
+      },
+    ],
+    'stateMutability': 'view',
+    'type': 'function',
+  },
+  {
+    'inputs': [
+      {
+        'internalType': 'uint256',
+        'name': '',
+        'type': 'uint256',
+      },
+    ],
+    'name': 'requests',
+    'outputs': [
+      {
+        'internalType': 'uint256',
+        'name': 'id',
+        'type': 'uint256',
+      },
+      {
+        'internalType': 'string',
+        'name': 'urlToQuery',
+        'type': 'string',
+      },
+      {
+        'internalType': 'string',
+        'name': 'attributeToFetch',
+        'type': 'string',
+      },
+      {
+        'internalType': 'string',
+        'name': 'agreedValue',
+        'type': 'string',
       },
     ],
     'stateMutability': 'view',

@@ -3,10 +3,10 @@ pragma solidity 0.8.19;
 
 contract Oracle {
   uint256 public currentId = 0; // increasing request id
-  uint256 public minQuorum = 2; // minimum number of responses to receive before declaring final result
-  uint256 public totalOracleCount = 3; // Hardcoded oracle count
+  uint256 minQuorum = 2; // minimum number of responses to receive before declaring final result
+  uint256 totalOracleCount = 3; // Hardcoded oracle count
 
-  Request[] requests; // list of requests made to the contract
+  Request[] public requests; // list of requests made to the contract
   mapping(uint256 => mapping(address => uint256)) public requestQuorum; // Separate mapping for quorum per request
   mapping(uint256 => mapping(uint256 => string)) public requestAnswers; // Separate mapping for answers per request
 
@@ -29,8 +29,8 @@ contract Oracle {
     mapping(address => uint256) storage quorum = requestQuorum[currentId];
 
     // Hardcoded/Trusted (off-chain) oracle accounts/addresses
-    quorum[address(0x8858eBF9a19bAf281624E571ef8309696D991Fde)] = 1;
     quorum[address(0x2ED69CD751722FC552bc8C521846d55f6BD8F090)] = 1;
+    quorum[address(0x8858eBF9a19bAf281624E571ef8309696D991Fde)] = 1;
     quorum[address(0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266)] = 1;
 
     // notify (off-chain) oracle (to process new request)
@@ -49,7 +49,7 @@ contract Oracle {
     // trusted (off-chain) oracles, and if the oracle hasn't voted yet
     if (quorum[address(msg.sender)] == 1) {
       // marking that this address has voted
-      quorum[msg.sender] = 2;
+      quorum[address(msg.sender)] = 2;
 
       // iterate through "array" of answers until a position if free and save the retrieved value
       uint256 idx = 0;

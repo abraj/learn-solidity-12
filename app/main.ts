@@ -1,6 +1,6 @@
 import { load } from '@std/dotenv';
 import { join } from '@std/path';
-import { createRequest, listen } from './utils/eth.ts';
+import { createRequest, listen, listen2 } from './utils/eth.ts';
 
 await load({
   // envPath: '/Users/abraj/dev/archive/learn-solidity/env/.env',
@@ -20,6 +20,7 @@ function main() {
 
   if (args.length === 0) {
     // client
+    listen2();
     clientRequest();
   } else if (args.length === 1 && allowedNodeNames.includes(args[0])) {
     // (off-chain) oracle

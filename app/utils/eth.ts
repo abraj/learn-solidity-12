@@ -3,6 +3,7 @@ import { ethers } from 'ethers';
 import { getPrivateKey, getRpcUrl } from './eth-utils.ts';
 import { abi, contractAddress } from '../const/eth-sepolia.ts';
 import { queryApi } from '../oracle.ts';
+import type { ContractTransactionResponse } from 'ethers';
 
 function getContract(signed = false, nodeName: string | null = null) {
   const chainId = 11155111; // Sepolia
@@ -14,6 +15,7 @@ function getContract(signed = false, nodeName: string | null = null) {
 
   const provider = new ethers.JsonRpcProvider(rpcUrl);
 
+  let signer = null;
   let contract;
   if (signed) {
     let address = process.env.WALLET_ADDRESS; // 'oracle-node1'
@@ -26,18 +28,18 @@ function getContract(signed = false, nodeName: string | null = null) {
       throw new Error('Invalid privateKey');
     }
 
-    const signer = new ethers.Wallet(privateKey, provider);
+    signer = new ethers.Wallet(privateKey, provider);
     contract = new ethers.Contract(contractAddress, abi, signer);
   } else {
     contract = new ethers.Contract(contractAddress, abi, provider);
   }
 
-  return contract;
+  return { contract, signer, provider };
 }
 
 export async function createRequest(url: string, attr: string) {
   try {
-    const contract = getContract(true);
+    const { contract } = getContract(true);
 
     if (!contract.interface.hasFunction('createRequest')) {
       throw new Error('Missing createRequest in ABI');
@@ -52,7 +54,7 @@ export async function createRequest(url: string, attr: string) {
 
 export function listen(nodeName: string) {
   try {
-    const contract = getContract();
+    const { contract } = getContract();
 
     contract.on('NewRequest', async (reqId, url, attr) => {
       const types = [reqId, url, attr].map((v) => typeof v);
@@ -77,14 +79,46 @@ export async function updateRequest(
   value: string,
 ) {
   try {
-    const contract = getContract(true, nodeName);
+    const { contract, provider } = getContract(true, nodeName);
 
     if (!contract.interface.hasFunction('updateRequest')) {
       throw new Error('Missing updateRequest in ABI');
     }
 
-    await contract.updateRequest(reqId, value);
+    const gasEstimate = await provider.estimateGas({
+      to: contract.getAddress(),
+      data: contract.interface.encodeFunctionData('updateRequest', [
+        reqId,
+        value,
+      ]),
+    });
+    const txnResp: ContractTransactionResponse = await contract.updateRequest(
+      reqId,
+      value,
+      { gasLimit: gasEstimate * 5n },
+    );
     console.log('txn submitted: updateRequest');
+    /* const txnReceipt = */ await txnResp.wait();
+    // console.log(txnReceipt);
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+export function listen2() {
+  try {
+    const { contract } = getContract();
+
+    contract.once('ResultAvailable', (reqId, url, attr, value) => {
+      const types = [reqId, url, attr, value].map((v) => typeof v);
+      console.log(
+        `[ResultAvailable event] reqId: ${reqId} (${types[0]}), url: (${
+          types[1]
+        }), attr: (${types[2]}), value: ${value}`,
+      );
+    });
+
+    console.log('listener setup!');
   } catch (err) {
     console.error(err);
   }
