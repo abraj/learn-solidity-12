@@ -5,6 +5,10 @@ import {
   contractAbi as oracleAbi,
   contractAddress as oracleAddress,
 } from '../abi/oracle.ts';
+import {
+  contractAbi as clientAbi,
+  contractAddress as clientAddress,
+} from '../abi/client.ts';
 import { queryApi } from '../oracle.ts';
 import type { ContractTransactionResponse } from 'ethers';
 
@@ -47,6 +51,25 @@ function getContract(
 
 function getOracleContract(signed = false, nodeName: string | null = null) {
   return getContract(oracleAddress, oracleAbi, signed, nodeName);
+}
+
+function getClientContract(signed = false, nodeName: string | null = null) {
+  return getContract(clientAddress, clientAbi, signed, nodeName);
+}
+
+export async function submitRequest(url: string, attr: string) {
+  try {
+    const { contract } = getClientContract(true);
+
+    if (!contract.interface.hasFunction('submitRequest')) {
+      throw new Error('Missing submitRequest in ABI');
+    }
+
+    await contract.submitRequest(url, attr);
+    console.log('txn submitted: submitRequest');
+  } catch (err) {
+    console.error(err);
+  }
 }
 
 export async function createRequest(url: string, attr: string) {
