@@ -16,12 +16,14 @@ async function clientRequest() {
 
 function main() {
   const args = Deno.args;
+  const allowedNodeNames = ['oracle-node1', 'oracle-node2'];
+
   if (args.length === 0) {
     // client
     clientRequest();
-  } else if (args.length === 1 && args[0] === 'oracle') {
+  } else if (args.length === 1 && allowedNodeNames.includes(args[0])) {
     // (off-chain) oracle
-    listen();
+    listen(args[0]);
   } else {
     console.log(`[ERROR] Invalid args: ${args}`);
   }
