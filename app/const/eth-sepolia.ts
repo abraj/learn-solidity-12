@@ -3,24 +3,6 @@ export const contractAddress = '0x8e3A3764E65eE972cf97c5AE4108999E095dAACf';
 
 export const abi = [
   {
-    'inputs': [
-      {
-        'internalType': 'string',
-        'name': '_urlToQuery',
-        'type': 'string',
-      },
-      {
-        'internalType': 'string',
-        'name': '_attributeToFetch',
-        'type': 'string',
-      },
-    ],
-    'name': 'createRequest',
-    'outputs': [],
-    'stateMutability': 'nonpayable',
-    'type': 'function',
-  },
-  {
     'anonymous': false,
     'inputs': [
       {
@@ -79,17 +61,17 @@ export const abi = [
   {
     'inputs': [
       {
-        'internalType': 'uint256',
-        'name': '_id',
-        'type': 'uint256',
+        'internalType': 'string',
+        'name': '_urlToQuery',
+        'type': 'string',
       },
       {
         'internalType': 'string',
-        'name': '_valueRetrieved',
+        'name': '_attributeToFetch',
         'type': 'string',
       },
     ],
-    'name': 'updateRequest',
+    'name': 'createRequest',
     'outputs': [],
     'stateMutability': 'nonpayable',
     'type': 'function',
@@ -97,19 +79,6 @@ export const abi = [
   {
     'inputs': [],
     'name': 'currentId',
-    'outputs': [
-      {
-        'internalType': 'uint256',
-        'name': '',
-        'type': 'uint256',
-      },
-    ],
-    'stateMutability': 'view',
-    'type': 'function',
-  },
-  {
-    'inputs': [],
-    'name': 'minQuorum',
     'outputs': [
       {
         'internalType': 'uint256',
@@ -203,16 +172,21 @@ export const abi = [
     'type': 'function',
   },
   {
-    'inputs': [],
-    'name': 'totalOracleCount',
-    'outputs': [
+    'inputs': [
       {
         'internalType': 'uint256',
-        'name': '',
+        'name': '_id',
         'type': 'uint256',
       },
+      {
+        'internalType': 'string',
+        'name': '_valueRetrieved',
+        'type': 'string',
+      },
     ],
-    'stateMutability': 'view',
+    'name': 'updateRequest',
+    'outputs': [],
+    'stateMutability': 'nonpayable',
     'type': 'function',
   },
 ];
