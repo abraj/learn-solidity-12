@@ -3,14 +3,22 @@
 ### Start (off-chain) oracle nodes
 
 ```bash
+# (off-chain) oracle nodes
 deno run -A app/main.ts oracle-node1
 deno run -A app/main.ts oracle-node2
 ```
 
-### Submit new request to (on-chain) oracle
+### Submit request via on-chain client
 
 ```bash
-# client
+# (off-chain) client
+deno run -A app/main.ts client
+```
+
+### Submit request directly to (on-chain) oracle
+
+```bash
+# (off-chain) client
 deno run -A app/main.ts
 ```
 
